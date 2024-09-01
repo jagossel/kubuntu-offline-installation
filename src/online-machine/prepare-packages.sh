@@ -86,12 +86,18 @@ if [ $useExistingPackages != "YES" ]; then
 fi
 
 # Generate the package index gzip file.
-packageIndexPath="$packagesDir/Packages.gz"
+packageIndexPath="$packagesDir/Packages"
 echo "Generating the $packageIndexPath..."
-dpkg-scanpackages $packagesDir /dev/null | gzip -9c > $packageIndexPath
+dpkg-scanpackages $packagesDir > $packageIndexPath
+sed -i "s|$packagesDir||g" $packageIndexPath
 
-packagesMd5Hash="$( md5sum $packageIndexPath | awk '{print $1}' )"
-packagesSha256Hash="$( sha256sum $packageIndexPath | awk '{print $1}' )"
+packageIndexCompressedPath="$packageIndexPath.gz"
+gzip -9c $packageIndexPath > $packageIndexCompressedPath
+
+rm $packageIndexPath
+
+packagesMd5Hash="$( md5sum $packageIndexCompressedPath | awk '{print $1}' )"
+packagesSha256Hash="$( sha256sum $packageIndexCompressedPath | awk '{print $1}' )"
 
 releaseFilePath="$packagesDir/Release"
 [ -f $releaseFilePath ] && rm $releaseFilePath -f
