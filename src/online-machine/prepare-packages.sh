@@ -3,6 +3,7 @@
 keepChroot=NO
 useExistingPackages=NO
 
+# Parse any parameters that have been passed.
 while [[ $# -gt 0 ]]; do
 	case $1 in
 		--keep-chroot)
@@ -20,11 +21,13 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
+# Need a way to quickly exit out of the script.
 bail() {
 	echo >&2 "$@"
 	exit 1
 }
 
+# Set up some pathing up-front.
 baseDir=$( dirname "$( readlink -f $0 )" )
 srcRootDir=$( dirname $baseDir )
 rootDir=$( dirname $srcRootDir )
@@ -45,9 +48,11 @@ if [ $useExistingPackages != "YES" ]; then
 	getPackagesSourcePath="$baseDir/get-packages.sh"
 	[ -f $getPackagesSourcePath ] || bail "Cannot find the get package script, $getPackagesSourcePath."
 
+	# Copy scripts that can only be executed in the chroot environment.
 	cp $getPackagesSourcePath $chrootDir/root -f
 	cp $packageListFilePath $chrootDir/root -f
 
+	# Prepare for the chrooted environment.
 	echo "Mounting temporary bindings for chroot..."
 	mount --bind /dev $chrootDir/dev
 	mount --bind /dev/pts $chrootDir/dev/pts
@@ -56,15 +61,18 @@ if [ $useExistingPackages != "YES" ]; then
 	mount --bind /run $chrootDir/run
 	mount --bind /tmp $chrootDir/tmp
 
+	# Invoke the script in the chrooted environment.
 	echo "Invoking get packages script in chroot (this will take a few minutes)..."
 	chroot $chrootDir bash /root/get-packages.sh
 
+	# Done with the chrooted environment, unmount to prevent issues with the system host.
 	echo "Completed!  Unmounting temporary bindings..."
 	umount -R $chrootDir/{tmp,run,sys,proc,dev}
 
 	[ -d $packagesDir ] && rm $packagesDir -Rf
 	mkdir $packagesDir
 
+	# At this point, it should be safe to copy all of the packages over.
 	downloadedPackagesPath="$chrootDir/var/cache/apt/archives"
 	[ -d $downloadedPackagesPath ] || bail "It appears that debootstrap failed, cannot find the path, $downloadedPackagesPath."
 
@@ -76,3 +84,27 @@ if [ $useExistingPackages != "YES" ]; then
 		rm $chrootDir -Rf
 	fi
 fi
+
+# Generate the package index gzip file.
+packageIndexPath="$packagesDir/Packages.gz"
+echo "Generating the $packageIndexPath..."
+dpkg-scanpackages $packagesDir /dev/null | gzip -9c > $packageIndexPath
+
+packagesMd5Hash="$( md5sum $packageIndexPath | awk '{print $1}' )"
+packagesSha256Hash="$( sha256sum $packageIndexPath | awk '{print $1}' )"
+
+releaseFilePath="$packagesDir/Release"
+[ -f $releaseFilePath ] && rm $releaseFilePath -f
+
+echo "Generating the $releaseFilePath..."
+echo "Origin: Local Repository" > $releaseFilePath
+echo "Label: Local Repository" >> $releaseFilePath
+echo "Suite: unstable" >> $releaseFilePath
+echo "Codename: noble" >> $releaseFilePath
+echo "Architectures: amd64" >> $releaseFilePath
+echo "Components: offline" >> $releaseFilePath
+echo "Description: A local repository for offline installation of packages." >> $releaseFilePath
+echo "MD5Sum:" >> $releaseFilePath
+echo " $packagesMd5Hash" >> $releaseFilePath
+echo "SHA256:" >> $releaseFilePath
+echo " $packagesSha256Hash" >> $releaseFilePath
