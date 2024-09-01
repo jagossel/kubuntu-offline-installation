@@ -12,15 +12,6 @@ echo "deb http://security.ubuntu.com/ubuntu/ noble-security main universe restri
 apt-get update
 apt-get -y upgrade
 
-originalIfs=$IFS
-IFS=$'\n'
-
-packageList=( $( cat /root/packages-core.txt ) )
-
-for (( i=0; i<${#packageList[@]}; i++ ))
-do
-	package=${packageList[$i]}
-	apt-get install -y $package
-done
-
-IFS=$originalIfs
+# Concatenate the package list into a single line, this should reduce the logging some.
+packageList="$( grep ".*" /root/packages-core.txt|tr '\n' ' ' )"
+apt-get -y install $packageList

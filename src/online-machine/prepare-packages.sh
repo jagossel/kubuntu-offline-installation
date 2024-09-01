@@ -9,15 +9,12 @@ baseDir=$( dirname "$( readlink -f $0 )" )
 srcRootDir=$( dirname $baseDir )
 rootDir=$( dirname $srcRootDir )
 
-logPath="$baseDir/prepare-packages.log"
-[ -f $logPath ] && rm $logPath
-
 chrootDir="$rootDir/chroot"
 if [ ! -d $chrootDir ]; then
 	mkdir $chrootDir
 
-	echo "Creating initial chroot environment..."
-	debootstrap --arch=amd64 noble $chrootDir http://archive.ubuntu.com/ubuntu/ >> $logPath
+	echo "Creating initial chroot environment (this will take a few minutes)..."
+	debootstrap --arch=amd64 noble $chrootDir http://archive.ubuntu.com/ubuntu/
 fi
 
 packageListFilePath="$srcRootDir/packages-core.txt"
@@ -37,14 +34,14 @@ mount -t sysfs /sys $chrootDir/sys
 mount --bind /run $chrootDir/run
 mount --bind /tmp $chrootDir/tmp
 
-echo "Invoking get packages script in chroot..."
-chroot $chrootDir bash /root/get-packages.sh >> $logPath
+echo "Invoking get packages script in chroot (this will take a few minutes)..."
+chroot $chrootDir bash /root/get-packages.sh
 
 echo "Completed!  Unmounting temporary bindings..."
 umount -R $chrootDir/{tmp,run,sys,proc,dev}
 
 packagesDir="$rootDir/packages"
-[ -d $packagesDir ] && rm $packagesDir -Rfv >> $logPath
+[ -d $packagesDir ] && rm $packagesDir -Rf
 
 mkdir $packagesDir
 
@@ -52,7 +49,7 @@ downloadedPackagesPath="$chrootDir/var/cache/apt/archives"
 [ -d $downloadedPackagesPath ] || bail "It appears that debootstrap failed, cannot find the path, $downloadedPackagesPath."
 
 echo "Copying packages from chroot environment..."
-cp $downloadedPackagesPath/* $packagesDir -Rfv >> $logPath
+cp $downloadedPackagesPath/* $packagesDir -Rf
 
 echo "Removing chroot environment..."
-rm $chrootDir -Rfv >> $logPath
+rm $chrootDir -Rf
