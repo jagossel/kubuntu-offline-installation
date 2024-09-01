@@ -1,4 +1,3 @@
-kubuntu-desktop
 dotnet-sdk-8.0
 doomsday
 dosbox

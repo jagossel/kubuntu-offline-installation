@@ -14,4 +14,4 @@ apt-get -y upgrade
 
 # Concatenate the package list into a single line, this should reduce the logging some.
 packageList="$( grep ".*" /root/packages-core.txt|tr '\n' ' ' )"
-apt-get -y install $packageList
+apt-get -y install kubuntu-desktop $packageList
