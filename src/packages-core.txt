@@ -18,3 +18,5 @@ fluidsynth
 libreoffice
 virt-manager
 code
+ffmpeg
+obs-studio
