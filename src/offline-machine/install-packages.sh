@@ -19,6 +19,32 @@ localRepoPath="/usr/share/repos/local-repo"
 echo "Copying packages to $localRepoPath..."
 cp $packagesDir/* $localRepoPath -Rf
 
+keyringsPath="/etc/apt/keyrings"
+[ -d $keyringsPath ] || install -d -m 0755 /etc/apt/keyrings
+
+sourceKeyringsPath="$rootDir/keyrings"
+if [ -d $sourceKeyringsPath ]; then
+	echo "Copying keyrings..."
+	cp $sourceKeyringsPath/* $keyringsPath -Rf
+fi
+
+sourceListPath="/etc/apt/sources.list.d"
+[ -d $sourceListPath ] || mkdir -p $sourceListPath
+
+additionalSourcesPath="$rootDir/sources.list.d"
+if [ -d $additionalSourcesPath ]; then
+	echo "Copying additional repo sources..."
+	cp $additionalSourcesPath/* $sourceListPath -Rf
+fi
+
+preferencesPath="/etc/apt/preferences.d"
+
+additionalPreferencesPath="$rootDir/preferences.d"
+if [ -d $additionalPreferencesPath ]; then
+	echo "Copying preferences..."
+	cp $additionalPreferencesPath $preferencesPath -Rf
+fi
+
 echo "Generating repo meta data..."
 echo "deb [trusted=yes] file:$localRepoPath ./" > /etc/apt/sources.list.d/offline.list
 

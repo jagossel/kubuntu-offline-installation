@@ -79,6 +79,39 @@ if [ $useExistingPackages != "YES" ]; then
 	echo "Copying packages from chroot environment..."
 	cp $downloadedPackagesPath/* $packagesDir -Rf
 
+	# Copy the keyring
+	sourceKeyringPath="$chrootDir/etc/apt/keyrings"
+	if [ -d $sourceKeyringPath ]; then
+		keyringPath="$rootDir/keyrings"
+		[ -d $keyringPath ] && rm $keyringPath -Rf
+
+		echo "Copying keyrings from chroot environment..."
+		mkdir -p $rootDir/keyrings
+		cp $sourceKeyringPath/* $keyringPath -Rf
+	fi
+
+	# Copy the repo source lists
+	addedSourceListPath="$chrootDir/etc/apt/sources.list.d"
+	if [ -d $addedSourceListPath ]; then
+		sourceListPath="$rootDir/sources.list.d"
+		[ -d $sourceListPath ] && rm $sourceListPath -Rf
+
+		echo "Copying source lists from chroot environment..."
+		mkdir -p $sourceListPath
+		cp $addedSourceListPath/* $sourceListPath -Rf
+	fi
+
+	# Copy preferences files
+	addedPreferencesPath="$chrootDir/etc/apt/preferences.d"
+	if [ -d $addedPreferencesPath ]; then
+		preferencesPath="$rootDir/preferences.d"
+		[ -d $preferencesPath ] && rm $preferencesPath -Rf
+
+		echo "Copy preferences from chroot environment..."
+		mkdir -p $preferencesPath
+		cp $addedPreferencesPath/* $preferencesPath -Rf
+	fi
+
 	if [ $keepChroot != "YES" ]; then
 		echo "Removing chroot environment..."
 		rm $chrootDir -Rf
@@ -99,6 +132,7 @@ rm $packageIndexPath
 packagesMd5Hash="$( md5sum $packageIndexCompressedPath | awk '{print $1}' )"
 packagesSha256Hash="$( sha256sum $packageIndexCompressedPath | awk '{print $1}' )"
 
+# Generate the Release file.
 releaseFilePath="$packagesDir/Release"
 [ -f $releaseFilePath ] && rm $releaseFilePath -f
 

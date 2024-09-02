@@ -1,4 +1,3 @@
-firefox
 code
 ffmpeg
 obs-studio

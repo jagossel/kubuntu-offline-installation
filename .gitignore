@@ -1,3 +1,6 @@
 chroot/
 packages/
+keyrings/
+sources.list.d/
+preferences.d/
 *.log
