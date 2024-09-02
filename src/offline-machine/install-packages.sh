@@ -54,4 +54,8 @@ apt-get -y upgrade
 packageList="$( grep ".*" $packageListFilePath|tr '\n' ' ' )"
 apt-get -y install $packageList
 
+# Install SDR++
+dpkg --install $localRepoPath/sdrpp_ubuntu_noble_amd64.deb
+apt-get --fix-broken -y install
+
 qdbus org.kde.Shutdown /Shutdown logoutAndReboot
