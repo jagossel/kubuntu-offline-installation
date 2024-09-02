@@ -17,3 +17,4 @@ qsynth
 fluidsynth
 libreoffice
 virt-manager
+code
