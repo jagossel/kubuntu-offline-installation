@@ -59,7 +59,7 @@ apt-get update
 apt-get -y upgrade
 
 # Concatenate the package list into a single line, this should reduce the logging some.
-packageList="$( grep ".*" /root/packages-core.txt|tr '\n' ' ' )"
+packageList="$( grep ".*" /root/packages.txt|tr '\n' ' ' )"
 apt-get -y install kubuntu-desktop $packageList
 
 # SDR++ Installation
