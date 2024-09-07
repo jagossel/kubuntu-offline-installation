@@ -20,3 +20,5 @@ virt-manager
 code
 ffmpeg
 obs-studio
+nvidia-driver-535
+nvidia-prime
