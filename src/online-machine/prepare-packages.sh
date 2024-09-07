@@ -42,7 +42,7 @@ if [ $useExistingPackages != "YES" ]; then
 		debootstrap --arch=amd64 noble $chrootDir http://archive.ubuntu.com/ubuntu/
 	fi
 
-	packageListFilePath="$srcRootDir/packages-core.txt"
+	packageListFilePath="$srcRootDir/packages.txt"
 	[ -f $packageListFilePath ] || bail "Cannot find the package list file, $packageListFilePath."
 
 	getPackagesSourcePath="$baseDir/get-packages.sh"

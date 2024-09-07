@@ -10,7 +10,7 @@ srcRootDir=$( dirname $baseDir )
 rootDir=$( dirname $srcRootDir )
 packagesDir="$rootDir/packages"
 
-packageListFilePath="$srcRootDir/packages-core.txt"
+packageListFilePath="$srcRootDir/packages.txt"
 [ -f $packageListFilePath ] || bail "Cannot find the package list file, $packageListFilePath."
 
 localRepoPath="/usr/share/repos/local-repo"
