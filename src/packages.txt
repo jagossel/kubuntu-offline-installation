@@ -9,6 +9,7 @@ inkscape
 rtl-sdr
 fldigi
 qsstv
+js8call
 audacious
 audacity
 kdenlive
@@ -16,9 +17,9 @@ pavucontrol
 qsynth
 fluidsynth
 libreoffice
-virt-manager
 code
 ffmpeg
 obs-studio
+virt-manager
 nvidia-driver-535
 nvidia-prime
