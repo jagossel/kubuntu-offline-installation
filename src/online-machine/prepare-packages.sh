@@ -148,3 +148,9 @@ echo "MD5Sum:" >> $releaseFilePath
 echo " $packagesMd5Hash" >> $releaseFilePath
 echo "SHA256:" >> $releaseFilePath
 echo " $packagesSha256Hash" >> $releaseFilePath
+
+# Create SHA256SUMS file
+echo "Generating SHA256SUMS file..."
+pushd $packagesDir
+sha256sum * > sha256sum
+popd
