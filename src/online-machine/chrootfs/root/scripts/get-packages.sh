@@ -3,7 +3,7 @@
 base_dir=$( dirname "$( readlink -f $0 )" )
 home_dir=$( dirname "$base_dir" )
 
-package_list_path="$home_dir/packages.txt"
+package_list_path="$home_dir/packages.csv"
 if [ ! -f "$package_list_path" ]; then
 	echo >&2 "Cannot find the package list, $package_list_path."
 	exit 1
@@ -59,7 +59,7 @@ apt-get update
 apt-get -y upgrade
 
 # Concatenate the package list into a single line, this should reduce the logging some.
-package_list="$( grep ".*" $package_list_path|tr '\n' ' ' )"
+package_list=$( awk -F, '{ print $1 }' $package_list_path | tr '\n' ' ' )
 apt-get -y install kubuntu-desktop $package_list
 
 # SDR++ Installation

@@ -10,7 +10,7 @@ if [ ! -d "$chroot_dir" ]; then
 	echo >&2 "Cannot find the chroot, $chroot_dir."
 fi
 
-package_list_path="$src_dir/packages.txt"
+package_list_path="$src_dir/packages.csv"
 if [ ! -f "$package_list_path" ]; then
 	echo >&2 "Cannot find the package list, $package_list_path."
 	exit 1

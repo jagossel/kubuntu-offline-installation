@@ -5,6 +5,11 @@ bail() {
 	exit 1
 }
 
+if [ -z "$1" ]; then
+	echo >&2 "The profile name is required."
+	exit 1
+fi
+
 verifyChecksums() {
 	while read -r checksum filename; do
 		if [ $filename != "sha256sum" ]; then
@@ -22,7 +27,7 @@ srcRootDir=$( dirname $baseDir )
 rootDir=$( dirname $srcRootDir )
 packagesDir="$rootDir/packages"
 
-packageListFilePath="$srcRootDir/packages.txt"
+packageListFilePath="$srcRootDir/packages.csv"
 [ -f $packageListFilePath ] || bail "Cannot find the package list file, $packageListFilePath."
 
 localRepoPath="/usr/share/repos/local-repo"
@@ -73,7 +78,8 @@ echo "deb [trusted=yes] file:$localRepoPath ./" > /etc/apt/sources.list.d/offlin
 apt-get update
 apt-get -y upgrade
 
-packageList="$( grep ".*" $packageListFilePath|tr '\n' ' ' )"
+# packageList="$( grep ".*" $packageListFilePath|tr '\n' ' ' )"
+packageList=$( grep -E ".*,($1|\*)" $packageListFilePath | awk -F, '{ print $1 }' | tr '\n' ' ' )
 apt-get -y install $packageList
 
 # Install SDR++
