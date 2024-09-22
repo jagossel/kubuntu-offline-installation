@@ -1,13 +1,13 @@
-# Configure the locale; this will be required when installing the packages.
-echo "en_US.UTF-8 UTF-8">/etc/locale.gen
-locale-gen
-echo "LANG=en_US.UTF-8 UTF-8">/etc/locale.conf
+#!/bin/bash
 
-# Properly set up the repository sources so we can get the packages needed.
-rm /etc/apt/sources.list
+base_dir=$( dirname "$( readlink -f $0 )" )
+home_dir=$( dirname "$base_dir" )
 
-echo "deb http://archive.ubuntu.com/ubuntu noble main universe restricted multiverse" | tee -a /etc/apt/sources.list
-echo "deb http://security.ubuntu.com/ubuntu/ noble-security main universe restricted multiverse" | tee -a /etc/apt/sources.list
+package_list_path="$home_dir/packages.txt"
+if [ ! -f "$package_list_path" ]; then
+	echo >&2 "Cannot find the package list, $package_list_path."
+	exit 1
+fi
 
 apt-get update
 apt-get install -y gpg wget
@@ -59,8 +59,8 @@ apt-get update
 apt-get -y upgrade
 
 # Concatenate the package list into a single line, this should reduce the logging some.
-packageList="$( grep ".*" /root/packages.txt|tr '\n' ' ' )"
-apt-get -y install kubuntu-desktop $packageList
+package_list="$( grep ".*" $package_list_path|tr '\n' ' ' )"
+apt-get -y install kubuntu-desktop $package_list
 
 # SDR++ Installation
 wget -O /var/cache/apt/archives/sdrpp_ubuntu_noble_amd64.deb https://github.com/AlexandreRouma/SDRPlusPlus/releases/download/nightly/sdrpp_ubuntu_noble_amd64.deb

@@ -1,0 +1,2 @@
+deb http://archive.ubuntu.com/ubuntu noble main universe restricted multiverse
+deb http://security.ubuntu.com/ubuntu/ noble-security main universe restricted multiverse
