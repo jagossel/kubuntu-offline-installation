@@ -27,5 +27,6 @@ for script_filename in "${script_filenames[@]}"; do
 		bash $script_path
 	else
 		echo >&2 "Cannot find the script, $script_path."
+		exit 1
 	fi
 done
