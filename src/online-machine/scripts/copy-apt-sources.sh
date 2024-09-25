@@ -11,9 +11,9 @@ if [ ! -d "$chroot_dir" ]; then
 fi
 
 sources_dir="$root_dir/sources.list.d"
-[ -d "$sources_dir" ] && rm $sources_dir -Rfv
+[ -d "$sources_dir" ] && rm $sources_dir -Rf
 
-mkdir -pv $sources_dir
+mkdir -p $sources_dir
 
 sources_source_dir="$chroot_dir/etc/apt/sources.list.d"
-cp $sources_source_dir/* $sources_dir -Rfv
+cp $sources_source_dir/* $sources_dir -Rf

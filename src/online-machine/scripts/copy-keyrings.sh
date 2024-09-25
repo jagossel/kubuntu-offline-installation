@@ -11,9 +11,9 @@ if [ ! -d "$chroot_dir" ]; then
 fi
 
 keyrings_dir="$root_dir/keyrings"
-[ -d "$keyrings_dir" ] && rm $keyrings_dir -Rfv
+[ -d "$keyrings_dir" ] && rm $keyrings_dir -Rf
 
-mkdir -pv $keyrings_dir
+mkdir -p $keyrings_dir
 
 keyrings_source_dir="$chroot_dir/etc/apt/keyrings"
-cp $keyrings_source_dir/* $keyrings_dir -Rfv
+cp $keyrings_source_dir/* $keyrings_dir -Rf

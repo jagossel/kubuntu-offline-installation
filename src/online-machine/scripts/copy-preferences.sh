@@ -11,9 +11,9 @@ if [ ! -d "$chroot_dir" ]; then
 fi
 
 preferences_dir="$root_dir/preferences.d"
-[ -d "$preferences_dir" ] && rm $preferences_dir -Rfv
+[ -d "$preferences_dir" ] && rm $preferences_dir -Rf
 
-mkdir -pv $preferences_dir
+mkdir -p $preferences_dir
 
 preferences_source_dir="$chroot_dir/etc/apt/preferences.d"
-cp $preferences_source_dir/* $preferences_dir -Rfv
+cp $preferences_source_dir/* $preferences_dir -Rf

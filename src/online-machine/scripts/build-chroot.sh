@@ -17,4 +17,4 @@ if [ ! -d "$chrootfs_dir" ]; then
 	exit 1
 fi
 
-cp $chrootfs_dir/* $chroot_dir -Rfv
+cp $chrootfs_dir/* $chroot_dir -Rf

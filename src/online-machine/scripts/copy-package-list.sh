@@ -16,4 +16,4 @@ if [ ! -f "$package_list_path" ]; then
 	exit 1
 fi
 
-cp $package_list_path $chroot_dir/root -fv
+cp $package_list_path $chroot_dir/root -f
