@@ -20,6 +20,7 @@ libreoffice,*
 code,*
 ffmpeg,*
 obs-studio,*
+podman,*
 virt-manager,pc
 nvidia-driver-535,pc
 nvidia-prime,pc
