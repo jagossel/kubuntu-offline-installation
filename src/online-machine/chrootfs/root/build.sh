@@ -8,25 +8,12 @@ if [ ! -d "$scripts_dir" ]; then
 	exit 1
 fi
 
-script_filenames=( \
-	"build-chroot.sh" \
-	"copy-package-list.sh" \
-	"get-packages.sh" \
-	"copy-packages.sh" \
-	"copy-keyrings.sh" \
-	"copy-apt-sources.sh" \
-	"copy-preferences.sh" \
-	"generate-packages-index.sh" \
-	"generate-release-file.sh" \
-	"generate-sha256-hash.sh" \
-	"remove-chroot.sh" )
-
+script_filenames=( "prepare-environment.sh" "get-packages.sh" )
 for script_filename in "${script_filenames[@]}"; do
 	script_path="$base_dir/scripts/$script_filename"
 	if [ -f "$script_path" ]; then
 		bash $script_path
 	else
 		echo >&2 "Cannot find the script, $script_path."
-		exit 1
 	fi
 done

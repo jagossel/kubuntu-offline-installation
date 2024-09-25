@@ -1,83 +1,44 @@
 #!/bin/bash
 
-bail() {
-	echo >&2 "$@"
+if [ -z "$1" ]; then
+	echo >&2 "The profile name is required."
 	exit 1
-}
+fi
 
-verifyChecksums() {
-	while read -r checksum filename; do
-		if [ $filename != "sha256sum" ]; then
-			if ! echo "$checksum  $filename" | sha256sum --check --status; then
-				bail "Chcecksum verifcation failed for $filename"
-			fi
+base_dir=$( dirname "$( readlink -f $0 )" )
+
+script_filenames=( \
+	"copy-packages.sh" \
+	"copy-keyrings.sh" \
+	"copy-apt-sources.sh" \
+	"copy-preferences.sh" \
+	"generate-offline-repo-source.sh" \
+	"install-packages.sh" \
+)
+
+for script_filename in "${script_filenames[@]}"; do
+	script_path="$base_dir/scripts/$script_filename"
+	if [ -f "$script_path" ]; then
+		bash $script_path $1
+	else
+		echo >&2 "Cannot find the script, $script_path."
+		exit 1
+	fi
+done
+
+post_install_scripts_path="$base_dir/post-install-scripts.csv"
+if [ -f "$post_install_scripts_path" ]; then
+	grep -E ".*,($1|\*)" $post_install_scripts_path | while IFS= read -r record; do
+		post_install_script_filename=$( echo "$record" | awk -F, '{ print $1 }' )
+		post_install_script_path="$base_dir/post-install-scripts/$post_install_script_filename"
+		if [ -f "$post_install_script_path" ]; then
+			bash $post_install_script_path
+		else
+			echo "Skipping over $post_install_script_path: file not found."
 		fi
-	done < "sha256sum"
-
-	echo "All checksums verified successfully."
-}
-
-baseDir=$( dirname "$( readlink -f $0 )" )
-srcRootDir=$( dirname $baseDir )
-rootDir=$( dirname $srcRootDir )
-packagesDir="$rootDir/packages"
-
-packageListFilePath="$srcRootDir/packages.txt"
-[ -f $packageListFilePath ] || bail "Cannot find the package list file, $packageListFilePath."
-
-localRepoPath="/usr/share/repos/local-repo"
-[ -d $localRepoPath ] || mkdir -p $localRepoPath
-
-echo "Verifying packages before copying..."
-pushd $packagesDir
-verifyChecksums
-popd
-
-echo "Copying packages to $localRepoPath..."
-cp $packagesDir/* $localRepoPath -Rf
-
-echo "Verifying packages after copying..."
-pushd $localRepoPath
-verifyChecksums
-popd
-
-keyringsPath="/etc/apt/keyrings"
-[ -d $keyringsPath ] || install -d -m 0755 /etc/apt/keyrings
-
-sourceKeyringsPath="$rootDir/keyrings"
-if [ -d $sourceKeyringsPath ]; then
-	echo "Copying keyrings..."
-	cp $sourceKeyringsPath/* $keyringsPath -Rf
+	done
+else
+	echo "Skipping over the pre-installation scripts; cannot find the path, $post_install_scripts_path."
 fi
-
-sourceListPath="/etc/apt/sources.list.d"
-[ -d $sourceListPath ] || mkdir -p $sourceListPath
-
-additionalSourcesPath="$rootDir/sources.list.d"
-if [ -d $additionalSourcesPath ]; then
-	echo "Copying additional repo sources..."
-	cp $additionalSourcesPath/* $sourceListPath -Rf
-fi
-
-preferencesPath="/etc/apt/preferences.d"
-
-additionalPreferencesPath="$rootDir/preferences.d"
-if [ -d $additionalPreferencesPath ]; then
-	echo "Copying preferences..."
-	cp $additionalPreferencesPath $preferencesPath -Rf
-fi
-
-echo "Generating repo meta data..."
-echo "deb [trusted=yes] file:$localRepoPath ./" > /etc/apt/sources.list.d/offline.list
-
-apt-get update
-apt-get -y upgrade
-
-packageList="$( grep ".*" $packageListFilePath|tr '\n' ' ' )"
-apt-get -y install $packageList
-
-# Install SDR++
-dpkg --install $localRepoPath/sdrpp_ubuntu_noble_amd64.deb
-apt-get --fix-broken -y install
 
 qdbus org.kde.Shutdown /Shutdown logoutAndReboot
