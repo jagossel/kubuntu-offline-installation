@@ -11,9 +11,9 @@ if [ ! -d "$chroot_dir" ]; then
 fi
 
 packages_dir="$root_dir/packages"
-[ -d "$packages_dir" ] && rm $packages_dir -Rfv
+[ -d "$packages_dir" ] && rm $packages_dir -Rf
 
-mkdir -pv $packages_dir
+mkdir -p $packages_dir
 
 packages_source_dir="$chroot_dir/var/cache/apt/archives"
-cp $packages_source_dir/* $packages_dir -Rfv
+cp $packages_source_dir/* $packages_dir -Rf

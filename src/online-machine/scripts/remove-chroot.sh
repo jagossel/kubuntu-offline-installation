@@ -7,5 +7,5 @@ root_dir=$( dirname $src_dir )
 
 chroot_dir="$root_dir/chroot"
 if [ -d "$chroot_dir" ]; then
-	rm $chroot_dir -Rfv
+	rm $chroot_dir -Rf
 fi
