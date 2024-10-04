@@ -1,3 +1,4 @@
 add-mozilla-repo.sh,*
 add-vscode-repo.sh,*
 add-obs-studio-repo.sh,*
+add-docker-repo.sh,*
