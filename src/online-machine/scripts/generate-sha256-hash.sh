@@ -14,3 +14,12 @@ fi
 pushd $packages_dir
 sha256sum * > sha256sum
 popd
+
+docker_images_path="$root_dir/docker-images"
+if [ -d "$docker_images_path" ]; then
+	pushd $docker_images_path
+	sha256sum * > sha256sum
+	pushd
+else
+	echo "Skipping docker image; cannot find the path, $docker_images_path."
+fi
