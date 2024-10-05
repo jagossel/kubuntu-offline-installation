@@ -1,2 +1,3 @@
 install-sdrpp.sh,*
 load-docker-images.sh,*
+run-open-webui.sh,*
