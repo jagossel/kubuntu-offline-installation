@@ -10,6 +10,7 @@ fi
 
 script_filenames=( \
 	"build-chroot.sh" \
+	"merge-chrootfs.sh" \
 	"copy-package-list.sh" \
 	"get-packages.sh" \
 	"copy-packages.sh" \
