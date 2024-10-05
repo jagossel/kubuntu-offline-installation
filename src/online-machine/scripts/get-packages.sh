@@ -17,6 +17,6 @@ mount -t sysfs /sys $chroot_dir/sys
 mount --bind /run $chroot_dir/run
 mount --bind /tmp $chroot_dir/tmp
 
-chroot $chroot_dir bash /root/build.sh
+chroot $chroot_dir /bin/bash /root/build.sh
 
 umount -R $chroot_dir/{tmp,run,sys,proc,dev}

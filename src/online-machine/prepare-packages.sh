@@ -17,6 +17,7 @@ script_filenames=( \
 	"copy-keyrings.sh" \
 	"copy-apt-sources.sh" \
 	"copy-preferences.sh" \
+	"copy-docker-images.sh" \
 	"generate-packages-index.sh" \
 	"generate-release-file.sh" \
 	"generate-sha256-hash.sh" \
