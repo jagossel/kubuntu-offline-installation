@@ -6,14 +6,14 @@ bail() {
 base_dir=$( dirname "$( readlink -f $0 )" )
 src_root_dir=$( dirname $base_dir )
 root_dir=$( dirname $src_root_dir )
-packages_dir="$root_dir/packages"
-checksum_path="$packages_dir/sha256sum"
+docker_images_path="$root_dir/docker-images"
+checksum_path="$docker_images_path/sha256sum"
 
-[ -d $packages_dir ] || bail "The packages directory does not exist.  Run the prepare-packages.sh script first."
+[ -d $docker_images_path ] || bail "The Docker images directory does not exist.  Run the prepare-packages.sh script first."
 [ -f $checksum_path ] || bail "The checksum file does not exist.  Run the prepare-packages.sh script first."
 
-echo "Verifying packages..."
-pushd $packages_dir
+echo "Verifying Docker Images..."
+pushd $docker_images_path
 while read -r checksum filename; do
 	if [ $filename != "sha256sum" ]; then
 		if ! echo "$checksum  $filename" | sha256sum --check --status; then

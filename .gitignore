@@ -3,4 +3,5 @@ packages/
 keyrings/
 sources.list.d/
 preferences.d/
+docker-images/
 *.log

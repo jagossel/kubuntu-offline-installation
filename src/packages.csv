@@ -24,3 +24,8 @@ podman,*
 virt-manager,pc
 nvidia-driver-535,pc
 nvidia-prime,pc
+docker-ce,*
+docker-ce-cli,*
+containerd.io,*
+docker-buildx-plugin,*
+docker-compose-plugin,*

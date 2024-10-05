@@ -10,12 +10,14 @@ fi
 
 script_filenames=( \
 	"build-chroot.sh" \
+	"merge-chrootfs.sh" \
 	"copy-package-list.sh" \
 	"get-packages.sh" \
 	"copy-packages.sh" \
 	"copy-keyrings.sh" \
 	"copy-apt-sources.sh" \
 	"copy-preferences.sh" \
+	"copy-docker-images.sh" \
 	"generate-packages-index.sh" \
 	"generate-release-file.sh" \
 	"generate-sha256-hash.sh" \
